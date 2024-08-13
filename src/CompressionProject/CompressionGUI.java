@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
@@ -20,7 +22,7 @@ import java.util.Map;
 //CompressionGUI class to show various compression algorithms by interface using (WindowBuilder)
 public class CompressionGUI {
 
-    private JFrame frame;
+    public JFrame frame;
     private JTextArea textArea;
     private JComboBox<String> fileSelector; //ComboBox to select 1 if the 3 example text files in the project
 
@@ -30,20 +32,6 @@ public class CompressionGUI {
     private static final String file3Path = "src\\example3.txt";
     private static final String compressedFilePath = "src\\compressed.bin";
     private static final String decompressedFilePath = "src\\Dec.txt";
-    //start the Application
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    CompressionGUI window = new CompressionGUI();
-                    window.frame.setVisible(true);//for the user to see the window on screen
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     
     //start the application(gui)
     public CompressionGUI() {
@@ -52,7 +40,7 @@ public class CompressionGUI {
     //initialize of the window and create all the buttons and text area for the user to see 
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 600, 400);
+        frame.setBounds(100, 100, 600, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
 
@@ -98,10 +86,19 @@ public class CompressionGUI {
         btnLZ77DynamicCompression.setBounds(20, 180, 250, 30);
         frame.getContentPane().add(btnLZ77DynamicCompression);
 
-        //add text area for output for the user to see the ratio of the different compressions in project
+     // Create a JTextArea
         textArea = new JTextArea();
-        textArea.setBounds(20, 220, 550, 120);
-        frame.getContentPane().add(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        // Wrap the JTextArea in a JScrollPane
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBounds(20, 220, 550, 300);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        // Add the JScrollPane to the frame instead of the JTextArea directly
+        frame.getContentPane().add(scrollPane);
 
         JLabel lblSelectCompressionMethod = new JLabel("Select Compression Method:");
         lblSelectCompressionMethod.setBounds(20, 40, 250, 20);
@@ -144,7 +141,8 @@ public class CompressionGUI {
         }
 
         String input = readInputFromFile(filePath);
-        textArea.setText("Running Combined Compression...\n");
+        textArea.setText("Selected File: " + input + "\n\n");
+        textArea.append("Running Combined Compression...\n");
         textArea.append("Original Size: " + input.getBytes(StandardCharsets.UTF_8).length + " bytes\n");
 
         byte[] compressedBytes = CombinedCompression.compress(input);
@@ -175,7 +173,8 @@ public class CompressionGUI {
         }
 
         String input = readInputFromFile(filePath);
-        textArea.setText("Running Huffman Compression...\n");
+        textArea.setText("Selected File: " + input + "\n\n");
+        textArea.append("Running Huffman Compression...\n");
         textArea.append("Original Size: " + input.getBytes(StandardCharsets.UTF_8).length + " bytes\n");
 
         HuffmanCoding huffmanCoding = new HuffmanCoding();
@@ -215,7 +214,8 @@ public class CompressionGUI {
         }
 
         String input = readInputFromFile(filePath);
-        textArea.setText("Running LZ77 Compression...\n");
+        textArea.setText("Selected File: " + input + "\n\n");
+        textArea.append("Running LZ77 Compression...\n");
         textArea.append("Original Size: " + input.getBytes(StandardCharsets.UTF_8).length + " bytes\n");
 
         // Compress using LZ77
@@ -249,7 +249,8 @@ public class CompressionGUI {
         }
 
         String input = readInputFromFile(filePath);
-        textArea.setText("Running LZ77 Dynamic Compression...\n");
+        textArea.setText("Selected File: " + input + "\n\n");
+        textArea.append("Running LZ77 Dynamic Compression...\n");
         textArea.append("Original Size: " + input.getBytes(StandardCharsets.UTF_8).length + " bytes\n");
 
         //compress using LZ77Dynamic
